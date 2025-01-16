@@ -25,17 +25,28 @@ There are 4 programs that I've written, each more useful than the last!
   - Made this so that I could debug why I couldn't print symbols in my program
   - Turned it into a fun exercise in manually indexing the strtab buffer to map the symbol names instead of using `elf_strptr()`
   
-## Things I still want to do
+## Compiling
 
-`mold` crashes when you try to link my generated executable... something tells me this is my fault
+``` sh
+make
+```
 
-llvm's `lld` gives me a nicer error message
+All binaries are in the `out/` folder.
 
-> ld.lld: error: out.o: invalid sh_info in symbol table
+All objects are in the `obj/` folder.
 
-Yeah, this is ~~possibly~~ definitely my fault.
+## Compatability
 
-Odds are I'm not adhering to the spec properly, so I will have to fix this before I go on generating crappy object files.
+[This commit](https://github.com/costowell/elf-fun/commit/f8b2bd3ec527b6744cf4f12f632fb748c894b91c) fixed the problem with certain linkers not working.
+
+Thank god to LLVM's lld which told me what I was doing wrong.
+
+### Tested Linkers
+
+- [ld](https://www.gnu.org/software/binutils/) ✅
+- [lld](https://github.com/llvm/llvm-project) ✅
+- [mold](https://github.com/rui314/mold) ✅
+- Maybe 🫵 YOU could find a linker that fails...
 
 ## Thanks to...
 
