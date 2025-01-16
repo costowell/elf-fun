@@ -42,13 +42,20 @@ int main(int argc, char **argv) {
       errx(EXIT_FAILURE, "elf_strptr() failed: %s", elf_errmsg(-1));
     printf("%-4.4jd %s\n", (uintmax_t)elf_ndxscn(scn), name);
     if (shdr.sh_type == SHT_SYMTAB && (data = elf_getdata(scn, NULL)) != NULL) {
-      printf("flags: %jx %jd\n", shdr.sh_flags, data->d_align);
+      printf("flags: %jx %jd %x\n", shdr.sh_flags, data->d_align, shdr.sh_info);
       printf("SYMBOL TABLE:\n");
       int count = shdr.sh_size / shdr.sh_entsize;
       for (int i = 0; i < count; ++i) {
         GElf_Sym sym;
         gelf_getsym(data, i, &sym);
-        printf("%s %lx %x\n", elf_strptr(e, shdr.sh_link, sym.st_name), sym.st_value, sym.st_shndx);
+        printf("--- %d ---\n", i);
+        printf("st_name: %d (%s)\n", sym.st_name, elf_strptr(e, shdr.sh_link, sym.st_name));
+        printf("st_info: %d (bind) %d (type)\n", ELF64_ST_BIND(sym.st_info), ELF64_ST_TYPE(sym.st_info));
+        printf("st_value: %jd\n", sym.st_value);
+        printf("st_size: %jd\n", sym.st_size);
+        printf("st_other: %d\n", sym.st_other);
+        printf("st_shndx: %d\n", sym.st_shndx);
+        printf("-----------------\n");
       }
       putchar('\n');
     }
