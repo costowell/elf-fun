@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
   shdr->sh_flags = SHF_ALLOC;
   shdr->sh_entsize = sizeof(Elf64_Sym);
   shdr->sh_link = strtabscn_index;
-  shdr->sh_info = 1; // # of symbols
+  shdr->sh_info = 1; // index of first non-local symbol
 
   // Create .shstrtab
   if ((scn = elf_newscn(e)) == NULL)
