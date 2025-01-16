@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
   if ((data = elf_newdata(scn)) == NULL)
     errx(EXIT_FAILURE, "elf_newdata() failed: %s", elf_errmsg(-1));
 
-  Elf64_Sym symtab[1] = { 0 };
+  Elf64_Sym symtab[2] = { 0 };
   Elf64_Sym sym = {
       .st_name = 1,
       .st_info = ELF64_ST_INFO(STB_GLOBAL, STT_SECTION),
@@ -118,10 +118,10 @@ int main(int argc, char **argv) {
       .st_value = 0, // Offset into section for objects
       .st_size = sizeof(text),
   };
-  symtab[0] = sym;
+  symtab[1] = sym;
 
   data->d_align = 8;
-  data->d_buf = (void*)&sym;
+  data->d_buf = (void*)&symtab;
   data->d_off = 0LL;
   data->d_size = sizeof(symtab);
   data->d_type = ELF_T_SYM;
@@ -135,6 +135,7 @@ int main(int argc, char **argv) {
   shdr->sh_flags = SHF_ALLOC;
   shdr->sh_entsize = sizeof(Elf64_Sym);
   shdr->sh_link = strtabscn_index;
+  shdr->sh_info = 1; // # of symbols
 
   // Create .shstrtab
   if ((scn = elf_newscn(e)) == NULL)
